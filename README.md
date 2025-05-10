@@ -211,3 +211,55 @@ JWT_EXPIRATION=7d
    - 确认数据库服务是否正常运行
    - 检查数据库连接字符串是否正确
    - 确认数据库用户权限是否足够
+
+## 卡密管理指南
+
+### 卡密文件位置与格式
+
+卡密文件位于 `/backend/src/cards.json`，采用JSON格式存储。每个卡密条目包含以下字段：
+
+```json
+{
+  "cardKey": "ABCDE-12345-FGHIJ-67890-KLMNO", // 卡密字符串
+  "isUsed": true,                             // 是否已使用
+  "usedAt": "2025-05-10T15:26:22.770Z",       // 使用时间
+  "createdAt": "2023-07-01T00:00:00.000Z"     // 创建时间
+}
+```
+
+### 手动修改卡密
+
+1. 找到卡密文件
+   ```bash
+   cd backend/src
+   ```
+
+2. 备份当前卡密文件（推荐）
+   ```bash
+   cp cards.json cards.json.bak
+   ```
+
+3. 使用文本编辑器打开卡密文件
+   ```bash
+   nano cards.json  # 或者使用其他编辑器如vim、vscode等
+   ```
+
+4. 按照JSON格式添加、修改或删除卡密
+   - 添加新卡密：在JSON数组中添加新的卡密对象
+   - 修改卡密状态：将`isUsed`字段设为`true`或`false`
+   - 删除卡密：移除对应的JSON对象
+
+5. 保存文件并重启后端服务
+   ```bash
+   # 如果使用PM2
+   pm2 restart jade-backend
+   
+   # 如果直接运行Node
+   cd ../..
+   pnpm run start:prod
+   ```
+
+> **注意事项**：
+> - 修改卡密文件后必须保持有效的JSON格式，建议使用支持JSON语法检查的编辑器
+> - 生产环境中修改卡密前建议先停止后端服务，修改完成后再启动服务
+> - 对于大量卡密管理，建议开发专门的管理界面而不是手动修改JSON文件
